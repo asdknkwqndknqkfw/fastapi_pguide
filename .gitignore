@@ -223,4 +223,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# 가상환경
+.venv_fastapi/
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,python,redis
