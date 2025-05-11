@@ -4,18 +4,18 @@ from typing import Optional, Annotated
 
 app = FastAPI()
 
-#Pydantic Model 클래스는 반드시 BaseModel을 상속받아 생성. 
+
+# Pydantic Model 클래스는 반드시 BaseModel을 상속받아 생성.
 class Item(BaseModel):
     name: str
     description: str | None = None
-    #description: Optional[str] = None
+    # description: Optional[str] = None
     price: float
     tax: float | None = None
-    #tax: Optional[float] = None
+    # tax: Optional[float] = None
 
-    
 
-#수행 함수의 인자로 Pydantic model이 입력되면 Json 형태의 Request Body 처리
+# 수행 함수의 인자로 Pydantic model이 입력되면 Json 형태의 Request Body 처리
 @app.post("/items")
 async def create_item(item: Item):
     print("###### item type:", type(item))
@@ -31,30 +31,31 @@ async def create_item_tax(item: Item):
     if item.tax:
         price_with_tax = item.price + item.tax
         item_dict.update({"price_with_tax": price_with_tax})
-    
-    return item_dict   
 
-# Path, Query, Request Body 모두 함께 적용. 
+    return item_dict
+
+
+# Path, Query, Request Body 모두 함께 적용.
 @app.put("/items/{item_id}")
 async def update_item(item_id: int, item: Item, q: str | None = None):
     result = {"item_id": item_id, **item.model_dump()}
-    
+
     if q:
         result.update({"q": q})
     print("#### result:", result)
     return result
 
+
 class User(BaseModel):
     username: str
     full_name: str | None = None
-    #full_name: Optional[str] = None
+    # full_name: Optional[str] = None
 
 
-# 여러개의 request body parameter 처리. 
-# json 데이터의 이름값과 수행함수의 인자명이 같아야 함.  
+# 여러개의 request body parameter 처리.
+# json 데이터의 이름값과 수행함수의 인자명이 같아야 함.
 @app.put("/items_mt/{item_id}")
 async def update_item_mt(item_id: int, item: Item, user: User):
     results = {"item_id": item_id, "item": item, "user": user}
     print("results:", results)
     return results
-
